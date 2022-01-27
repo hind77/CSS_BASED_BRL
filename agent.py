@@ -41,8 +41,8 @@ class Agent(object):
         self.last_state = None
         self.last_action = None
         
-    
-    def act(self, reward, next_state, next_state_is_terminal):
+    @classmethod
+    def act(cls, reward, next_state, next_state_is_terminal):
         """
         
 

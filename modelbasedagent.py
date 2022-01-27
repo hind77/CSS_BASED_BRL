@@ -29,8 +29,26 @@ class ModelBasedAgent(Agent):
         self.transition_observations.fill(0)
         self.value_table.fill(0)
         
+    @classmethod    
+    def _value_iteration(cls, transition_probs):
+        
+        """
+        The value iteration algorithm to find the maximum action value
 
-    def _value_iteration(self, transition_probs):
+        Parameters
+        ----------
+        transition_probs : np.ndarray()
+
+        Raises
+        ------
+        Exception
+            indicate the divergence of the algorithm.
+
+        Returns
+        -------
+        None.
+
+        """
 
         value_dim = transition_probs.shape[0]
         value = np.zeros(value_dim)
@@ -39,18 +57,18 @@ class ModelBasedAgent(Agent):
             diff = 0
             for s in range(value_dim):
                 old = value[s]
-                value[s] = np.max(np.sum(transition_probs[s]*(self.reward[s] +
-                           self.discount_factor*np.array([value,]*self.num_actions)),
+                value[s] = np.max(np.sum(transition_probs[s]*(cls.reward[s] +
+                           cls.discount_factor*np.array([value,]*cls.num_actions)),
                            axis=1))
                 diff = max(0, abs(old - value[s]))
             k += 1
             if diff < EPSILON:
                 break
             if k > DIVERGENCE_PARAM:
-                raise Exception("Value iteration not converging. Stopped at 1e6 iterations.")
+                raise Exception("Value iteration not converging.")
         for s in range(value_dim):
-            self.value_table[s] = np.sum(transition_probs[s]*(self.reward[s] +
-                   self.discount_factor*np.array([value,]*self.num_actions)),
+            cls.value_table[s] = np.sum(transition_probs[s]*(cls.reward[s] +
+                   cls.discount_factor*np.array([value,]*cls.num_actions)),
                    axis=1)
         
     
